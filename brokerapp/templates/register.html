@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='/styles/register.css') }}">
+    {% block title %}
+          <title>  {{title}} </title>
+     {% endblock %}
+</head>
+<body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      
+      {% for message in messages %}
+          <p class="alert">{{ message }}<p>
+      {% endfor %}
+      
+  {% endif %}
+{% endwith %}
+    <div class="form_wrapper">
+        <div class="form_container">
+          <div class="title_container">
+            <h2>Welcome to PostWorld</h2>
+          </div>
+          <div class="row clearfix">
+            <div class="">
+              <form method="post">
+                {{ form.hidden_tag() }}
+
+                <div class="row clearfix">
+                  <div class="col_half">
+                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                      {{form.firstname}}
+                      <!-- {{form.lastname}} -->
+                    </div>
+                  </div>
+                  <div class="col_half">
+                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                      {{form.lastname}}
+                    </div>
+                  </div>
+                </div>
+
+              
+                {% if form.username.errors %}
+                      {% for error in form.username.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                  {% endif %}
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                {{form.username}}
+                </div>
+                {% if form.email.errors %}
+                      {% for error in form.email.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                  {% endif %}
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                {{form.email}}
+                </div>
+
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                  {% if form.password.errors %}
+                  {{form.password}}
+                      {% for error in form.password.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+
+                  {% else %}
+                      {{form.password}}
+                  {% endif %}
+                </div>
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                  {% if form.confirm_password.errors %}
+                    {{form.confirm_password}}
+                        {% for error in form.confirm_password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+
+                    {% else %}
+                        {{form.confirm_password}}
+                    {% endif %}
+                </div>
+                
+                      <div class="input_field radio_option">
+                      <p1> Gender</p1>
+                        {{form.category}}
+                      </div>
+                      <div class="input_field radio_option">
+                        <p1> Date Of Birth</p1>
+                          {{form.dob}}
+                        </div>
+                    <!-- <div class="input_field select_option">
+                      <select>
+                        <option>Select a country</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                      </select>
+                      <div class="select_arrow"></div>
+                    </div> -->
+                  <div class="input_field checkbox_option">
+                      <input type="checkbox" id="cb1">
+                      <label for="cb1">I agree with terms and conditions</label>
+                  </div>
+                  <div class="input_field checkbox_option">
+                      <input type="checkbox" id="cb2">
+                      <label for="cb2">I want to receive the newsletter</label>
+                  </div>
+                <div class="button">{{form.submit}}</div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="credit">Already have acoount?? <a href="{{ url_for('users.login') }}" >Sign In</a></p>
+</body>
+</html>

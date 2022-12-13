@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='/styles/register.css') }}">
+    <link rel="shortcut icon" href="../static/images/Pro_default.jpg" type="image/gif">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% endif %}
+</head>
+<body>
+
+    <div class="form_wrapper">
+        <div class="form_container">
+          <div class="title_container">
+            <h2>Welcome Back to PostWorld</h2>
+          </div>
+          <div class="error-messag">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+
+                  {% for message in messages %}
+                      <p class="error-message">{{ message }}<p>
+                  {% endfor %}
+
+              {% endif %}
+          {% endwith %}
+         </div>
+          <div class="row clearfix">
+            <div class="">
+              <form method="post">
+                {{ form.hidden_tag() }}
+                {% if form.email.errors %}
+                      {% for error in form.email.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                  {% endif %}
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                {{form.email}}
+                </div>
+
+                  {% if form.password.errors %}
+                      {% for error in form.password.errors %}
+                          <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                  {% endif %}
+
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                      {{form.password}}
+                </div>
+
+                <div class="input_field checkbox_option">
+                  {{form.remember}}
+                  {{form.remember.label}}
+                </div>
+                <div class="forget_pass">
+                  <a href="{{ url_for('users.password_reset') }}" >Forgotten password?</a>
+                </div>
+                <br>
+                <div class="button">{{form.submit}}</div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="credit">New to PostWorld?? <a href="{{ url_for('users.register') }}" >Sign Up</a></p>
+</body>
+</html>

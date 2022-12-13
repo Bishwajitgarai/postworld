@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% if title %}
+        <title>{{ title }}</title>
+        {% endif %}
+        <link rel="stylesheet" href="{{ url_for('static',filename='/styles/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename='/fontawesome/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename='/styles/templatemo-style.css') }}">
+
+    </head>
+<body>
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+        {% for message in messages %}
+            <p class="alert">{{ message }}<p>
+        {% endfor %}
+
+    {% endif %}
+    {% endwith %}
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ (url_for('utilities.home') )}}">
+                <i class="fas fa-film mr-2"></i>
+                PostWorld
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    {% if postpage=='home' %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-1 active" aria-current="page" href="{{ (url_for('utilities.home') )}}">All Posts</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-1 " aria-current="page" href="{{ (url_for('utilities.home') )}}">All Posts</a>
+                        </li>
+                    {% endif %}
+                {% if current_user.is_authenticated %}
+                    {% if postpage=='home' %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-3" href="{{ url_for('posts.mypost') }}">My posts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-3" href="{{ url_for('messages.message_menu') }}">Messages</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-3 active" href="{{ url_for('posts.mypost') }}">My posts</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    {% if (title!="login") and (title!="register") %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-2" href="{{ url_for('users.login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-2" href="{{ url_for('users.register') }}">Sign Up</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link nav-link-2" href="{{ url_for('users.account') }}">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-4" href="{{ url_for('users.logout') }}">Log Out</a>
+                </li>
+                {% endif %}
+            </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid tm-container-content tm-mt-60">
+        <div class="row mb-4">
+            <h2 class="col-6 tm-text-primary"></h2>
+            {% if posts %}
+                {% for post in posts.items %}
+                    <div class="row tm-mb-90 tm-gallery">
+                        <div class="posthead">
+
+                            <div class="pro_pic">
+                                <img src="/static/images/{{ User.query.filter_by(id=post.userid).first().image_file }}" style="border-radius: 50%;height: 30px;width: 30px;">
+                                <a href="{{ url_for('utilities.profile_view',userid=current_user.id) }}" >{{ User.query.filter_by(id=post.userid).first().firstname }} {{ User.query.filter_by(id=post.userid).first().lastname }}</a>
+                                {% if current_user.id==post.userid %}
+                                    <button><a href="{{ url_for('posts.update_post',postid=post.postid,userid=post.userid,page=posts.page) }}">Edit</a></button>
+                                    <button><a href="{{ url_for('posts.delete_post',postid=post.postid,userid=post.userid,page=posts.page) }}">Delete</a></button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                            <div class="postdesc">
+
+                                <h5>{{ post.post_details }} </h5>
+
+                            </div>
+
+                            <figure class="effect-ming tm-video-item">
+
+                                {% for image in Images.query.filter_by(userid=post.userid,postid=post.postid) %}
+
+                                    <img src="{{ image.images_name }}" alt="Image" class="img-fluid">
+
+                                {% endfor %}
+
+                            </figure>
+                            <div class="d-flex justify-content-between tm-text-gray">
+                                <span class="tm-text-gray-light">{{ post.post_create_date }}</span>
+                                <span>{{post.post_views}} views</span>
+                            </div>
+                        </div>
+                {% endfor %}
+
+            {% else %}
+            {% if current_user.is_authenticated %}
+
+            {% else %}
+                <h2 style="text-align: center;">Please <a href="{{ url_for('users.login') }}">Login</a> or <a href="{{ url_for('users.register') }}">Sign UP</a> to view Post</h2>
+                <br><br>
+            {% endif %}
+        {% endif %}
+        <!-- when No data -->
+        {% if posts.pages==0 %}
+                    <h2 style="text-align: center;">
+                        No Data Found
+                    </h2>
+        {% endif %}
+            </div>
+        </div>
+
+    {% if posts %}
+        {% if posts.pages!=0 %}
+        <p>Pages : </p>
+        {% endif %}
+        <div class="row tm-mb-90">
+            <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
+                {% if posts.has_prev %}
+                <a href="{{ url_for('posts.searchpost', page=posts.prev_num,serach=search_data,postpage=postpage) }}" class="btn btn-primary tm-btn-prev mb-2 ">Previous</a>
+                {% endif %}
+                {% for page_num in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                    <div class="tm-paging d-flex">
+                        {% if page_num %}
+                            {% if page_num==posts.page %}
+                                <a href="{{ url_for('posts.searchpost',page=page_num,serach=search_data,postpage=postpage) }}" class="active tm-paging-link">{{ page_num }}</a>
+
+                            {% else %}
+                                <a href="{{ url_for('posts.searchpost',page=page_num,serach=search_data,postpage=postpage) }}" class="tm-paging-link">{{ page_num }}</a>
+                            {% endif %}
+                        {% else %}
+
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if posts.has_next %}
+                <a href="{{ url_for('posts.searchpost', page=posts.next_num ,serach=search_data,postpage=postpage ) }}" class="btn btn-primary tm-btn-next">Next Page</a>
+                {% endif %}
+            </div>
+        </div>
+
+    {% endif %}
+    <script src="{{ url_for('static',filename='js/plugins.js') }}"></script>
+    <script>
+        $(window).on("load", function() {
+            $('body').addClass('loaded');
+        });
+    </script>
+</body>
+</html>

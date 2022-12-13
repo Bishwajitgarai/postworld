@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='/styles/account.css') }}">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% endif %}
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        
+        {% for message in messages %}
+            <p class="alert">{{ message }}<p>
+        {% endfor %}
+        
+    {% endif %}
+    {% endwith %}
+    <div class="form_wrapper">
+        <div class="form_container">
+          <div class="title_container">
+            <h2>Create Post</h2>
+          </div>
+          <!-- <div><img src="{{ image_file }}" style="border-radius: 50%;height: 120px;width: 120px;"></div> -->
+          
+
+          
+          <div class="row clearfix">
+            <div class="">
+                <form method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                
+                <div class="textarea">
+                
+                    {% if form.post_details.errors %}
+                  {{form.post_details}}
+                      {% for error in form.post_details.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+
+                  {% else %}
+                      {{form.post_details}}
+                  {% endif %}
+                </div>
+                <br>
+                
+                      {% if form.pictures.errors %}
+                      {{form.pictures}}
+                          {% for error in form.pictures.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+
+                      {% else %}
+         
+                          {{form.pictures}}
+                      {% endif %}
+                  
+                
+                <div class="row clearfix">
+              
+                  <div class="option"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                    Select Category : {{form.post_title}}
+                  </div>
+
+                </div>
+                <br><br>    
+                <div class="button">{{form.submit}}</div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="credit">Don,t wany to post Goto  <a href="{{ url_for('utilities.home') }}" target="_blank">Home</a></p>
+</body>
+</html>
